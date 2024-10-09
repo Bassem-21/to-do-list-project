@@ -1,0 +1,141 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: rgb(49, 49, 158);
+    display: flex;
+    justify-content: center;
+}
+
+main {
+    background-color: white;
+    color: black;
+    padding: 30px 30px 70px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    border-radius: 10px;
+    margin-top: 100px;
+    position: relative;
+}
+
+.top-part {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.top-part h2 {
+    color: rgb(33, 17, 126);
+}
+
+.input-add-container {
+    display: flex;
+    position: relative;
+}
+
+.task {
+    border-radius: 25px;
+    width: 350px;
+    border: none;
+    padding: 15px;
+    background-color: rgba(180, 180, 180, 0.329);
+    position: relative;
+}
+
+.add-button {
+    position: absolute; 
+    right: 0; 
+    padding: 15px;
+    border: none;
+    border-radius: 25px;
+    color: white;
+    cursor: pointer;
+    background-color: orangered;
+    width: 110px;
+}
+
+.add-button:hover {
+    background-color: rgb(4, 220, 0);
+}
+
+.clear-button {
+    padding: 15px;
+    border: none;
+    border-radius: 25px;
+    color: white;
+    cursor: pointer;
+    background-color: crimson; 
+    width: 100%; 
+    margin-top: 10px;
+}
+
+.clear-button:hover {
+    background-color: rgb(255, 0, 0);
+    transition: background-color 0.3s;
+}
+
+.tasks-container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.single-task-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.single-task-container-left {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.single-task-container-left input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-label {
+    width: 24px;
+    height: 24px;
+    border: 2px solid orange; 
+    border-radius: 50%; 
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.checkbox-label.checked {
+    background-color: orange; 
+}
+
+.checkbox-label.checked::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.single-task-container button {
+    font-size: 15px;
+    background-color: transparent;
+    border: none;
+    color: red;
+}
+
+.completed {
+    text-decoration: line-through;
+    color: gray;
+}
