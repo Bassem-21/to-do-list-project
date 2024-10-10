@@ -41,7 +41,7 @@ function createSingleTaskHtml(task) {
             <div class="single-task-container-left">
                 <input type="checkbox" id="checkbox-${task.id}" ${checkedAttribute} onclick="toggleTask(${task.id})">
                 <label class="checkbox-label ${checkedClass}" for="checkbox-${task.id}"></label>
-                <label for="checkbox-${task.id}" class="${task.completed ? 'completed' : ''}">${task.task}</label>
+                <label for="checkbox-${task.id}" class="${task.completed ? 'completed' : ''} label-line">${task.task}</label>
             </div>
             <button onclick="removeTask(${task.id})">X</button>
         </div>
@@ -73,7 +73,8 @@ function toggleTask(taskId) {
         label.classList.remove('completed');
         checkboxLabel.classList.remove('checked');
         checkbox.checked = false; 
-}}
+    }
+}
 
 function clearTask() {
     taskAdded.value = "";

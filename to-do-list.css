@@ -21,6 +21,7 @@ main {
     border-radius: 10px;
     margin-top: 100px;
     position: relative;
+    width: 450px;
 }
 
 .top-part {
@@ -40,9 +41,10 @@ main {
 
 .task {
     border-radius: 25px;
-    width: 350px;
+    width: 390px;
     border: none;
     padding: 15px;
+    padding-right: 100px;
     background-color: rgba(180, 180, 180, 0.329);
     position: relative;
 }
@@ -56,7 +58,7 @@ main {
     color: white;
     cursor: pointer;
     background-color: orangered;
-    width: 110px;
+    width: 95px;
 }
 
 .add-button:hover {
@@ -138,4 +140,30 @@ main {
 .completed {
     text-decoration: line-through;
     color: gray;
+}
+
+.label-line {
+    width: 300px;           
+    height: fit-content;          
+}
+
+/* Media query for responsiveness */
+@media (max-width: 480px) {
+    main {
+        width: 90%;
+        padding: 20px;
+        margin-top: 50px;
+    }
+
+    .task {
+        width: 100%;
+    }
+
+    .add-button {
+        width: 80px;
+    }
+
+    .label-line {
+        width: 100%;
+    }
 }
