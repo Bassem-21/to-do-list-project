@@ -118,4 +118,7 @@ ul li span:hover {
         height: 30px;
         font-size: 18px;
     }
+    ul li::before{
+        top: 5px;
+    }
 }
