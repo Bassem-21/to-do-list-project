@@ -1,101 +1,41 @@
-let tasks = [];
-let showTasks = document.getElementById('show-tasks');
-let taskAdded = document.getElementById('task-added');
-let id = 0;
+const inputBox = document.getElementById('input-box');
+const listContainer = document.getElementById('list-container');
 
-function loadTasks() {
-    const storedTasks = JSON.parse(localStorage.getItem("tasks"));
-    if (storedTasks) {
-        tasks = storedTasks;
-        tasks.forEach(task => {
-            id = Math.max(id, task.id); 
-            createSingleTaskHtml(task);
-        });
-    }
-}
-
-function addTask() {
-    const taskValue = taskAdded.value.trim();
-    if (!taskValue) return; 
-    addTaskToArray(taskValue);
-    createSingleTaskHtml({ id, task: taskValue, completed: false });
-    clearTask();
-    saveTasks(); 
-}
-
-function addTaskToArray(taskValue) {
-    id++;
-    let tasksToPush = {
-        id: id,
-        task: taskValue,
-        completed: false, 
-    };
-    tasks.push(tasksToPush);
-}
-
-function createSingleTaskHtml(task) {
-    const checkedAttribute = task.completed ? 'checked' : '';
-    const checkedClass = task.completed ? 'checked' : '';
-    const taskHtml = `
-        <div class="single-task-container" id="task-${task.id}">
-            <div class="single-task-container-left">
-                <input type="checkbox" id="checkbox-${task.id}" ${checkedAttribute} onclick="toggleTask(${task.id})">
-                <label class="checkbox-label ${checkedClass}" for="checkbox-${task.id}"></label>
-                <label for="checkbox-${task.id}" class="${task.completed ? 'completed' : ''} label-line">${task.task}</label>
-            </div>
-            <button onclick="removeTask(${task.id})">X</button>
-        </div>
-    `;
-    showTasks.innerHTML += taskHtml;
-
-    if (task.completed) {
-        const taskElement = document.getElementById(`task-${task.id}`);
-        const label = taskElement.querySelector('label:not(.checkbox-label)');
-        label.classList.add('completed');
-    }
-}
-
-function toggleTask(taskId) {
-    const task = tasks.find(t => t.id === taskId);
-    task.completed = !task.completed; 
-    saveTasks();
-
-    const taskElement = document.getElementById(`task-${taskId}`);
-    const label = taskElement.querySelector('label:not(.checkbox-label)');
-    const checkboxLabel = taskElement.querySelector('.checkbox-label');
-    const checkbox = taskElement.querySelector('input[type="checkbox"]');
-
-    if (task.completed) {
-        label.classList.add('completed');
-        checkboxLabel.classList.add('checked');
-        checkbox.checked = true;
+function AddTask() {
+    if (inputBox.value === '') {
+        alert('Please enter a task');
     } else {
-        label.classList.remove('completed');
-        checkboxLabel.classList.remove('checked');
-        checkbox.checked = false; 
+        const li = document.createElement('li');
+        li.textContent = inputBox.value;
+        listContainer.appendChild(li);
+        let span = document.createElement('span');
+        span.innerHTML = "\u00d7";
+        li.appendChild(span);
+    }
+    inputBox.value = '';
+    saveData();
+}
+
+listContainer.addEventListener('click', function (e) {
+    if (e.target.tagName === 'LI') {
+        e.target.classList.toggle('checked');
+        saveData();
+    }
+    if (e.target.tagName === 'SPAN') {
+        e.target.parentElement.remove();
+        saveData();
+    }
+}, false);
+
+function saveData() {
+    localStorage.setItem("data", listContainer.innerHTML);
+    console.log('Saved data:', listContainer.innerHTML);
+}
+
+function showTask() {
+    const savedData = localStorage.getItem("data");
+    if (savedData) {
+        listContainer.innerHTML = savedData;
     }
 }
-
-function clearTask() {
-    taskAdded.value = "";
-}
-
-function removeTask(taskId) {
-    tasks = tasks.filter(task => task.id !== taskId);
-    let taskElement = document.getElementById(`task-${taskId}`);
-    if (taskElement) {
-        taskElement.remove();
-    }
-    saveTasks(); 
-}
-
-function saveTasks() {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-}
-
-function clearAllTasks() {
-    tasks = [];
-    showTasks.innerHTML = ""; 
-    saveTasks(); 
-}
-loadTasks();
+showTask();
