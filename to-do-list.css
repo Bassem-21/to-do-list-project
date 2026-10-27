@@ -219,3 +219,11 @@ button:focus-visible, [role="button"]:focus-visible {
         margin-top: calc((1.65 * 15px - 34px) / 2);
     }
 }
+
+@media (max-width: 600px) {
+    #list-container li { padding-left: 36px; }
+    #list-container li::before {
+        width: 20px;
+        height: 20px;
+    }
+}
