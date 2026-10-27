@@ -153,27 +153,29 @@ button:focus-visible, [role="button"]:focus-visible {
     outline-offset: 2px;
 }
 
-/* Align task content and controls through the same row center. */
+/* Keep wrapped tasks aligned with the first line of text. */
 #list-container li {
-    display: flex;
-    align-items: center;
-    gap: 4px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 34px 34px;
+    align-items: start;
+    column-gap: 8px;
+    line-height: 1.65;
     min-height: 48px;
     padding: 8px 0 8px 48px;
     text-decoration: none;
 }
 #list-container li::before {
-    top: 50%;
+    top: calc(8px + 0.825em);
     transform: translateY(-50%);
 }
-.task-text { flex: 1; min-width: 0; line-height: 1.5; }
+.task-text { flex: 1; min-width: 0; line-height: 1.65; }
 .checked .task-text { text-decoration: line-through; }
 #list-container .edit-task, #list-container .delete-task {
     position: static;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex: 0 0 34px;
+    margin-top: calc((1.65 * 17px - 34px) / 2);
     width: 34px;
     height: 34px;
     padding: 0;
@@ -210,4 +212,10 @@ button:focus-visible, [role="button"]:focus-visible {
     border-bottom: 4px solid currentColor;
     border-radius: 2px;
     transform: translateY(-2px) rotate(-45deg);
+}
+
+@media (max-width: 600px) {
+    #list-container .edit-task, #list-container .delete-task {
+        margin-top: calc((1.65 * 15px - 34px) / 2);
+    }
 }
