@@ -1,41 +1,153 @@
 const inputBox = document.getElementById('input-box');
 const listContainer = document.getElementById('list-container');
+const taskCounter = document.getElementById('task-counter');
+const clearCompleted = document.getElementById('clear-completed');
+const clearAll = document.getElementById('clear-all');
 
-function AddTask() {
-    if (inputBox.value === '') {
-        alert('Please enter a task');
-    } else {
-        const li = document.createElement('li');
-        li.textContent = inputBox.value;
-        listContainer.appendChild(li);
-        let span = document.createElement('span');
-        span.innerHTML = "\u00d7";
-        li.appendChild(span);
-    }
-    inputBox.value = '';
-    saveData();
+function addTaskRow(text, completed = false) {
+    const li = document.createElement('li');
+    li.classList.toggle('checked', completed);
+    const label = document.createElement('div');
+    label.className = 'task-text';
+    label.textContent = text;
+    li.appendChild(label);
+    const edit = document.createElement('button');
+    edit.type = 'button';
+    edit.className = 'edit-task';
+    edit.textContent = '✎';
+    edit.title = 'Edit task';
+    edit.setAttribute('aria-label', 'Edit task');
+    li.appendChild(edit);
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'delete-task';
+    remove.title = 'Delete task';
+    remove.textContent = '\u00d7';
+    remove.setAttribute('role', 'button');
+    remove.setAttribute('tabindex', '0');
+    remove.setAttribute('aria-label', 'Delete task');
+    li.appendChild(remove);
+    listContainer.appendChild(li);
 }
 
-listContainer.addEventListener('click', function (e) {
-    if (e.target.tagName === 'LI') {
-        e.target.classList.toggle('checked');
+function AddTask() {
+    const text = inputBox.value.trim();
+    if (!text) {
+        inputBox.focus();
+        return;
+    }
+    addTaskRow(text);
+    inputBox.value = '';
+    saveData();
+    inputBox.focus();
+}
+
+inputBox.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter' && !event.isComposing) AddTask();
+});
+
+function editTask(li) {
+    const label = li.querySelector('.task-text');
+    if (li.querySelector('.task-edit-input')) return;
+    const original = label.textContent;
+    const field = document.createElement('input');
+    field.className = 'task-edit-input';
+    field.value = original;
+    field.setAttribute('aria-label', 'Task text');
+    label.replaceWith(field);
+    const editButton = li.querySelector('.edit-task');
+    editButton.textContent = '✓';
+    editButton.title = 'Save task';
+    editButton.setAttribute('aria-label', 'Save task');
+    let finished = false;
+    function finish(cancel = false) {
+        if (finished) return;
+        finished = true;
+        label.textContent = cancel ? original : (field.value.trim() || original);
+        field.replaceWith(label);
+        editButton.textContent = '✎';
+        editButton.title = 'Edit task';
+        editButton.setAttribute('aria-label', 'Edit task');
         saveData();
     }
-    if (e.target.tagName === 'SPAN') {
-        e.target.parentElement.remove();
+    field.addEventListener('save-task', () => finish());
+    field.addEventListener('blur', event => {
+        if (event.relatedTarget !== editButton) finish();
+    });
+    field.addEventListener('keydown', event => {
+        if (event.isComposing) return;
+        if (event.key === 'Enter' || event.key === 'Escape') {
+            event.preventDefault();
+            finish(event.key === 'Escape');
+            li.querySelector('.edit-task').focus();
+        }
+    });
+    field.focus();
+    field.select();
+}
+
+listContainer.addEventListener('click', function (event) {
+    const target = event.target;
+    const li = target.closest('li');
+    if (!li || target.matches('.task-edit-input')) return;
+    if (target.closest('.edit-task')) {
+        const field = li.querySelector('.task-edit-input');
+        if (field) field.dispatchEvent(new Event('save-task'));
+        else editTask(li);
+    } else if (target.closest('.delete-task')) {
+        li.remove();
+        saveData();
+    } else {
+        li.classList.toggle('checked');
         saveData();
     }
-}, false);
+});
+
+clearCompleted.addEventListener('click', function () {
+    listContainer.querySelectorAll('li.checked').forEach(task => task.remove());
+    saveData();
+});
+
+clearAll.addEventListener('click', function () {
+    listContainer.replaceChildren();
+    saveData();
+});
+
+function updateCounter() {
+    const total = listContainer.children.length;
+    const completed = listContainer.querySelectorAll('li.checked').length;
+    const remaining = total - completed;
+    taskCounter.textContent = `${remaining} ${remaining === 1 ? 'task' : 'tasks'} left`;
+    clearCompleted.disabled = completed === 0;
+    clearAll.disabled = total === 0;
+}
 
 function saveData() {
-    localStorage.setItem("data", listContainer.innerHTML);
-    console.log('Saved data:', listContainer.innerHTML);
+    const saved = listContainer.cloneNode(true);
+    saved.querySelectorAll('.task-edit-input').forEach(field => {
+        const label = document.createElement('div');
+        label.className = 'task-text';
+        label.textContent = field.value.trim() || field.defaultValue;
+        field.replaceWith(label);
+    });
+    localStorage.setItem('data', saved.innerHTML);
+    updateCounter();
 }
 
 function showTask() {
-    const savedData = localStorage.getItem("data");
+    const savedData = localStorage.getItem('data');
     if (savedData) {
-        listContainer.innerHTML = savedData;
+        // Rebuild existing saved tasks, including lists saved before editing was added.
+        const saved = document.createElement('template');
+        saved.innerHTML = savedData;
+        saved.content.querySelectorAll('li').forEach(task => {
+            const text = task.querySelector('.task-text')?.textContent ?? Array.from(task.childNodes)
+                .filter(node => node.nodeType === Node.TEXT_NODE)
+                .map(node => node.textContent).join('');
+            addTaskRow(text, task.classList.contains('checked'));
+        });
     }
+    updateCounter();
 }
+
 showTask();

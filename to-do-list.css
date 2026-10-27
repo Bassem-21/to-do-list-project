@@ -122,3 +122,92 @@ ul li span:hover {
         top: 5px;
     }
 }
+/* Compact task controls keep the original colors and layout. */
+#input-box { min-width: 0; }
+#list-container li { padding-right: 90px; overflow-wrap: anywhere; }
+.edit-task {
+    position: absolute;
+    right: 40px;
+    top: 9px;
+    padding: 6px 8px;
+    background: transparent;
+    color: #555;
+    font-size: 12px;
+}
+.edit-task:hover { background: #edeef0; }
+.task-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    color: #555;
+    font-size: 13px;
+}
+.task-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.task-actions button { padding: 9px 12px; font-size: 12px; }
+.task-actions button:disabled { opacity: 0.45; cursor: default; }
+button:focus-visible, [role="button"]:focus-visible {
+    outline: 2px solid #002765;
+    outline-offset: 2px;
+}
+
+/* Align task content and controls through the same row center. */
+#list-container li {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 48px;
+    padding: 8px 0 8px 48px;
+    text-decoration: none;
+}
+#list-container li::before {
+    top: 50%;
+    transform: translateY(-50%);
+}
+.task-text { flex: 1; min-width: 0; line-height: 1.5; }
+.checked .task-text { text-decoration: line-through; }
+#list-container .edit-task, #list-container .delete-task {
+    position: static;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: #555;
+    font-size: 23px;
+    line-height: 1;
+}
+#list-container .edit-task:hover, #list-container .delete-task:hover {
+    background: #edeef0;
+}
+.task-edit-input {
+    width: 0;
+    min-width: 0;
+    padding: 4px 6px;
+    border: 1px solid #002765;
+    border-radius: 5px;
+    font: inherit;
+    color: #002765;
+    background: #edeef0;
+}
+
+#list-container .delete-task { color: #e53935; }
+#list-container .edit-task { color: #002765; }
+#list-container .delete-task { font-size: 30px; }
+#list-container .edit-task[aria-label="Save task"] { color: #218739; }
+#list-container .edit-task[aria-label="Save task"] { font-size: 0; }
+#list-container .edit-task[aria-label="Save task"]::after {
+    content: "";
+    width: 15px;
+    height: 8px;
+    border-left: 4px solid currentColor;
+    border-bottom: 4px solid currentColor;
+    border-radius: 2px;
+    transform: translateY(-2px) rotate(-45deg);
+}

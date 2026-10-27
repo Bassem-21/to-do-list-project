@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>To-Do List</title>
     <link rel="stylesheet" href="to-do-list.css">
 </head>
 <body>
@@ -15,6 +15,13 @@
                 <button onclick="AddTask()">Add</button>
             </div>
             <ul id="list-container"></ul>
+            <div class="task-footer">
+                <p id="task-counter" aria-live="polite">0 tasks left</p>
+                <div class="task-actions">
+                    <button id="clear-completed" type="button">Clear completed</button>
+                    <button id="clear-all" type="button">Clear all</button>
+                </div>
+            </div>
         </div>
     </div>
 
