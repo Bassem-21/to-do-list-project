@@ -189,7 +189,7 @@ button:focus-visible, [role="button"]:focus-visible {
     background: #edeef0;
 }
 .task-edit-input {
-    width: 0;
+    width: 100%;
     min-width: 0;
     padding: 4px 6px;
     border: 1px solid #002765;
