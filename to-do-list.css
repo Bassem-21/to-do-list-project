@@ -168,7 +168,7 @@ button:focus-visible, [role="button"]:focus-visible {
     top: calc(8px + 0.825em);
     transform: translateY(-50%);
 }
-.task-text { flex: 1; min-width: 0; line-height: 1.65; }
+.task-text { flex: 1; min-width: 0; line-height: 1.65; white-space: pre-wrap; }
 .checked .task-text { text-decoration: line-through; }
 #list-container .edit-task, #list-container .delete-task {
     position: static;
@@ -191,12 +191,21 @@ button:focus-visible, [role="button"]:focus-visible {
 .task-edit-input {
     width: 100%;
     min-width: 0;
-    padding: 4px 6px;
-    border: 1px solid #002765;
-    border-radius: 5px;
+    display: block;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    outline: none;
+    resize: none;
+    user-select: text;
+    white-space: pre-wrap;
+    overflow: visible;
+    overflow-wrap: anywhere;
     font: inherit;
-    color: #002765;
-    background: #edeef0;
+    line-height: 1.65;
+    color: inherit;
+    background: transparent;
 }
 
 #list-container .delete-task { color: #e53935; }

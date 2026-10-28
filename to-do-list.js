@@ -50,9 +50,11 @@ function editTask(li) {
     const label = li.querySelector('.task-text');
     if (li.querySelector('.task-edit-input')) return;
     const original = label.textContent;
-    const field = document.createElement('input');
-    field.className = 'task-edit-input';
-    field.value = original;
+    const field = label.cloneNode(true);
+    field.classList.add('task-edit-input');
+    field.contentEditable = 'plaintext-only';
+    field.setAttribute('role', 'textbox');
+    field.setAttribute('aria-multiline', 'true');
     field.setAttribute('aria-label', 'Task text');
     label.replaceWith(field);
     const editButton = li.querySelector('.edit-task');
@@ -63,7 +65,7 @@ function editTask(li) {
     function finish(cancel = false) {
         if (finished) return;
         finished = true;
-        label.textContent = cancel ? original : (field.value.trim() || original);
+        label.textContent = cancel ? original : (field.innerText.trim() || original);
         field.replaceWith(label);
         editButton.textContent = '✎';
         editButton.title = 'Edit task';
@@ -76,20 +78,19 @@ function editTask(li) {
     });
     field.addEventListener('keydown', event => {
         if (event.isComposing) return;
-        if (event.key === 'Enter' || event.key === 'Escape') {
+        if (event.key === 'Escape' || (event.key === 'Enter' && (event.ctrlKey || event.metaKey))) {
             event.preventDefault();
             finish(event.key === 'Escape');
             li.querySelector('.edit-task').focus();
         }
     });
     field.focus();
-    field.select();
 }
 
 listContainer.addEventListener('click', function (event) {
     const target = event.target;
     const li = target.closest('li');
-    if (!li || target.matches('.task-edit-input')) return;
+    if (!li || target.closest('.task-edit-input')) return;
     if (target.closest('.edit-task')) {
         const field = li.querySelector('.task-edit-input');
         if (field) field.dispatchEvent(new Event('save-task'));
@@ -124,10 +125,10 @@ function updateCounter() {
 
 function saveData() {
     const saved = listContainer.cloneNode(true);
-    saved.querySelectorAll('.task-edit-input').forEach(field => {
+    saved.querySelectorAll('.task-edit-input').forEach((field, index) => {
         const label = document.createElement('div');
         label.className = 'task-text';
-        label.textContent = field.value.trim() || field.defaultValue;
+        label.textContent = listContainer.querySelectorAll('.task-edit-input')[index].innerText;
         field.replaceWith(label);
     });
     localStorage.setItem('data', saved.innerHTML);
